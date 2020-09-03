@@ -82,17 +82,12 @@ ui <- fluidPage(
   hr(),
 
   # Sidebar with a slider input for number of bins
-  sidebarLayout(
-    sidebarPanel(
-      fileInput('excel', 'Choose an XLSX File', accept = '.xlsx'),
-      selectInput('reference', 'Choose a reference', c('Kromayer-Hauschild' = 'kro.ref', 'WHO' = 'who.ref', 'KiGGS' = 'kiggs.ref', 'AGA' = 'aga_15.ref')),
-      uiOutput('data_set_config')
-    ),
+  fluidRow(
+    column(3, fileInput('excel', 'Choose an XLSX File', accept = '.xlsx')),
+    column(3, selectInput('reference', 'Choose a reference', c('Kromayer-Hauschild' = 'kro.ref', 'WHO' = 'who.ref', 'KiGGS' = 'kiggs.ref', 'AGA' = 'aga_15.ref')))
+  ),
 
-    mainPanel(
-      tableOutput('preview')
-    )
-  )
+  uiOutput('data_set_config')
 )
 
 # Define server logic required to draw a histogram
@@ -132,14 +127,22 @@ server <- function(input, output) {
   output$data_set_config <- renderUI({
     req(data())
     tagList(
-      textInput('bmi_col', 'BMI Column', value = 'BMI'),
-      varSelectInput('age_col', 'Age Column', data()),
-      varSelectInput('sex_col', 'Sex Column', data()),
-      textInput('male_string', 'Male value', value = 'male'),
-      textInput('female_string', 'Female value', value = 'female'),
-      varSelectInput('height_col', 'Height Column', data()),
-      varSelectInput('weight_col', 'Weight Column', data()),
-      actionButton('apply_config', 'Apply')
+      hr(),
+      fluidRow(
+        column(2, varSelectInput('age_col', 'Age Column', data())),
+        column(2, varSelectInput('sex_col', 'Sex Column', data())),
+        column(2, varSelectInput('height_col', 'Height Column', data())),
+        column(2, varSelectInput('weight_col', 'Weight Column', data()))
+      ),
+      fluidRow(
+        column(2, textInput('bmi_col', 'BMI Column', value = 'BMI')),
+        column(2, textInput('male_string', 'Male value', value = 'male')),
+        column(2, textInput('female_string', 'Female value', value = 'female')),
+        column(2, actionButton('apply_config', 'Apply'))
+      ),
+      hr(),
+      'Preview',
+      tableOutput('preview')
     )
   })
 
