@@ -129,10 +129,10 @@ server <- function(input, output) {
     req(data())
     tagList(
       fluidRow(
-        column(2, varSelectInput('age_col', 'Age Column', data())),
         column(2, varSelectInput('sex_col', 'Sex Column', data())),
-        column(2, varSelectInput('height_col', 'Height Column', data())),
-        column(2, varSelectInput('weight_col', 'Weight Column', data()))
+        column(2, varSelectInput('age_col', 'Age Column (years)', data())),
+        column(2, varSelectInput('height_col', 'Height Column (cm)', data())),
+        column(2, varSelectInput('weight_col', 'Weight Column (kg)', data()))
       ),
       fluidRow(
         column(2, textInput('bmi_col', 'BMI Column', value = 'BMI')),
