@@ -11,7 +11,7 @@ library(shiny)
 library(openxlsx)
 library(childsds)
 
-calculateSdsValues <- function (
+calculateSdsValues <- function(
   data,
   reference,
   column.names = list(
@@ -77,15 +77,16 @@ ui <- fluidPage(
   # Description of the app
   'Please choose an Excel file (XLSX) and modify the configurations as needed. A table will be displayed with a preview of the resulting data.',
   br(),
-  'When you are satisfied, click on "Save".',
+  'When you are satisfied, click on "Generate" to save the resulting Excel file.',
 
   hr(),
 
-  # Sidebar with a slider input for number of bins
   fluidRow(
     column(3, fileInput('excel', 'Choose an XLSX File', accept = '.xlsx')),
     column(3, selectInput('reference', 'Choose a reference', c('Kromayer-Hauschild' = 'kro.ref', 'WHO' = 'who.ref', 'KiGGS' = 'kiggs.ref', 'AGA' = 'aga_15.ref')))
   ),
+
+  hr(),
 
   uiOutput('data_set_config')
 )
@@ -127,7 +128,6 @@ server <- function(input, output) {
   output$data_set_config <- renderUI({
     req(data())
     tagList(
-      hr(),
       fluidRow(
         column(2, varSelectInput('age_col', 'Age Column', data())),
         column(2, varSelectInput('sex_col', 'Sex Column', data())),
@@ -138,18 +138,36 @@ server <- function(input, output) {
         column(2, textInput('bmi_col', 'BMI Column', value = 'BMI')),
         column(2, textInput('male_string', 'Male value', value = 'male')),
         column(2, textInput('female_string', 'Female value', value = 'female')),
-        column(2, actionButton('apply_config', 'Apply'))
+
+        column(2, style = "margin-top: 25px", downloadButton('generate', 'Generate', class = 'pull-right'))
       ),
       hr(),
-      'Preview',
+      tags$h3('Preview'),
       tableOutput('preview')
     )
   })
 
-  observeEvent(input$apply_config, {
-    req(input$age_col, input$height_col, input$weight_col)
-
-  })
+  output$generate <- downloadHandler(
+    filename = function() {
+      paste0(tools::file_path_sans_ext(input$excel$name), '_SDS.xlsx')
+    },
+    content = function(file) {
+      data <- calculateSdsValues(
+        data(),
+        input$reference,
+        male   = input$male_string,
+        female = input$female_string,
+        column.names = list(
+          age    = input$age_col,
+          sex    = input$sex_col,
+          height = input$height_col,
+          weight = input$weight_col,
+          bmi    = input$bmi_col
+        )
+      )
+      write.xlsx(data, file)
+    }
+  )
 }
 
 # Run the application
