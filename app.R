@@ -65,7 +65,7 @@ calculateSdsValues <- function(
       item  = 'bmi',
       ref   = ref
     )
-    data[[paste(column.names$bmi, 'P')]] <- pnorm(data[[column.names$bmi_sds]]) * 100
+    data[[paste(column.names$bmi, 'P')]] <- pnorm(data[[paste(column.names$bmi, 'SDS')]]) * 100
   }, silent = TRUE)
 
   return(data)
@@ -129,17 +129,17 @@ server <- function(input, output) {
     req(data())
     tagList(
       fluidRow(
-        column(2, varSelectInput('sex_col', 'Sex Column', data())),
-        column(2, varSelectInput('age_col', 'Age Column (years)', data())),
-        column(2, varSelectInput('height_col', 'Height Column (cm)', data())),
-        column(2, varSelectInput('weight_col', 'Weight Column (kg)', data()))
+        column(3, varSelectInput('sex_col', 'Sex Column', data())),
+        column(3, varSelectInput('age_col', 'Age Column (years)', data())),
+        column(3, varSelectInput('height_col', 'Height Column (cm)', data())),
+        column(3, varSelectInput('weight_col', 'Weight Column (kg)', data()))
       ),
       fluidRow(
-        column(2, textInput('bmi_col', 'BMI Column', value = 'BMI')),
-        column(2, textInput('male_string', 'Male value', value = 'male')),
-        column(2, textInput('female_string', 'Female value', value = 'female')),
+        column(3, textInput('bmi_col', 'BMI Column', value = 'BMI')),
+        column(3, textInput('male_string', 'Male value', value = 'male')),
+        column(3, textInput('female_string', 'Female value', value = 'female')),
 
-        column(2, style = "margin-top: 25px", downloadButton('generate', 'Generate', class = 'pull-right'))
+        column(3, style = "margin-top: 25px", downloadButton('generate', 'Generate'))
       ),
       hr(),
       tags$h3('Preview'),
