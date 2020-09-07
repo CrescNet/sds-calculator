@@ -83,7 +83,7 @@ ui <- fluidPage(
 
   fluidRow(
     column(3, fileInput('excel', 'Choose an XLSX File', accept = '.xlsx')),
-    column(3, selectInput('reference', 'Choose a reference', c('Kromayer-Hauschild' = 'kro.ref', 'WHO' = 'who.ref', 'KiGGS' = 'kiggs.ref', 'AGA' = 'aga_15.ref')))
+    column(3, selectInput('reference', 'Choose a reference', c('Kromeyer-Hauschild' = 'kro.ref', 'WHO' = 'who.ref', 'KiGGS' = 'kiggs.ref', 'AGA' = 'aga_15.ref')))
   ),
 
   hr(),
