@@ -25,48 +25,29 @@ calculateSdsValues <- function(
   female = 'female'
 ) {
   try({
-    age    <- data[[column.names$age]]
-    sex    <- data[[column.names$sex]]
-    height <- data[[column.names$height]]
-    weight <- data[[column.names$weight]]
     ref    <- eval(parse(text = reference))
   }, silent = TRUE)
 
   try({
-    data[[paste(column.names$height, 'SDS')]] <- sds(
-      value = height,
-      age   = age,
-      sex   = sex, male = male, female = female,
-      item  = 'height',
-      ref   = ref
-    )
-    data[[paste(column.names$height, 'P')]] <- pnorm(data[[paste(column.names$height, 'SDS')]]) * 100
-  }, silent = TRUE)
-
-  try ({
-    data[[paste(column.names$weight, 'SDS')]] <- sds(
-      value = weight,
-      age   = age,
-      sex   = sex, male = male, female = female,
-      item  = 'weight',
-      ref   = ref
-    )
-    data[[paste(column.names$weight, 'P')]] <- pnorm(data[[paste(column.names$weight, 'SDS')]]) * 100
-  }, silent = TRUE)
-
-  try({
     if (length(data[[column.names$bmi]]) == 0) {
-      data[[column.names$bmi]] <- weight / (height / 100) ^ 2
+      data[[column.names$bmi]] <- data[[column.names$weight]] / (data[[column.names$height]] / 100) ^ 2
     }
-    data[[paste(column.names$bmi, 'SDS')]] <- sds(
-      value = data[[column.names$bmi]],
-      age   = age,
-      sex   = sex, male = male, female = female,
-      item  = 'bmi',
-      ref   = ref
-    )
-    data[[paste(column.names$bmi, 'P')]] <- pnorm(data[[paste(column.names$bmi, 'SDS')]]) * 100
   }, silent = TRUE)
+
+  for (object in c('height', 'weight', 'bmi')) {
+    try({
+      data[[paste(column.names[[object]], 'SDS')]] <- sds(
+        value  = data[[column.names[[object]]]],
+        age    = data[[column.names$age]],
+        sex    = data[[column.names$sex]],
+        male   = male,
+        female = female,
+        item   = object,
+        ref    = ref
+      )
+      data[[paste(column.names[[object]], 'P')]] <- pnorm(data[[paste(column.names[[object]], 'SDS')]]) * 100
+    }, silent = FALSE)
+  }
 
   return(data)
 }
@@ -153,13 +134,13 @@ server <- function(input, output) {
     req(data())
     tagList(
       fluidRow(
-        column(3, varSelectInput('sex_col', 'Sex Column', data())),
-        column(3, varSelectInput('age_col', 'Age Column (years)', data())),
-        column(3, varSelectInput('height_col', 'Height Column (cm)', data())),
-        column(3, varSelectInput('weight_col', 'Weight Column (kg)', data()))
+        column(3, varSelectInput('sex_col', 'Sex column', data())),
+        column(3, varSelectInput('age_col', 'Age column (years)', data())),
+        column(3, varSelectInput('height_col', 'Height column (cm)', data())),
+        column(3, varSelectInput('weight_col', 'Weight column (kg)', data()))
       ),
       fluidRow(
-        column(3, textInput('bmi_col', 'BMI Column', value = 'BMI')),
+        column(3, textInput('bmi_col', 'BMI column', value = 'BMI')),
         column(3, textInput('male_string', 'Male value', value = 'male')),
         column(3, textInput('female_string', 'Female value', value = 'female')),
 
