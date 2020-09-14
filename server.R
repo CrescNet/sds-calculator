@@ -86,7 +86,6 @@ shinyServer(function(input, output) {
 
   output$sheetNameSelection <- renderUI({
     req(sheetNames())
-    print(sheetNames())
     selectInput('sheetName', 'Sheet Name', sheetNames())
   })
 
@@ -110,7 +109,7 @@ shinyServer(function(input, output) {
         column(3, textInput('male_string', 'Male value', value = 'male')),
         column(3, textInput('female_string', 'Female value', value = 'female')),
 
-        column(3, style = "margin-top: 25px", downloadButton('generate', 'Generate'))
+        column(3, style = 'margin-top: 25px', downloadButton('generate', 'Generate'))
       ),
       hr(),
       tags$h3('Preview'),
