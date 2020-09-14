@@ -50,12 +50,21 @@ calculateSdsValues <- function(
 shinyServer(function(input, output) {
   options(shiny.maxRequestSize = 30 * 1024 ^ 2)
 
-  data <- reactive({
+  validInput <- reactive({
     req(input$excel)
-    file <- input$excel
-    ext <- tools::file_ext(file$datapath)
+    ext <- tools::file_ext(input$excel$datapath)
     validate(need(ext == 'xlsx', 'Please choose an XLSX file'))
-    read.xlsx(input$excel$datapath, sep.names = ' ')
+    TRUE
+  })
+
+  sheetNames <- reactive({
+    req(validInput())
+    getSheetNames(input$excel$datapath)
+  })
+
+  data <- reactive({
+    req(validInput(), input$sheetName)
+    read.xlsx(input$excel$datapath, sheet = input$sheetName, sep.names = ' ')
   })
 
   preview <- reactive({
@@ -73,6 +82,12 @@ shinyServer(function(input, output) {
         bmi    = input$bmi_col
       )
     )
+  })
+
+  output$sheetNameSelection <- renderUI({
+    req(sheetNames())
+    print(sheetNames())
+    selectInput('sheetName', 'Sheet Name', sheetNames())
   })
 
   output$preview <- renderTable({

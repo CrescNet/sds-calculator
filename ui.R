@@ -17,6 +17,10 @@ shinyUI(fluidPage(
 
   fluidRow(
     column(3, fileInput('excel', 'Choose an XLSX File', accept = '.xlsx')),
+    column(3, uiOutput('sheetNameSelection'))
+  ),
+
+  fluidRow(
     column(
       3,
       selectInput(
@@ -36,7 +40,11 @@ shinyUI(fluidPage(
         )
       )
     ),
-    column(6, style = "margin-top: 25px", tagList('The R package ', a('childsds', href = 'https://cran.r-project.org/package=childsds'), 'is used to calculate the SDS values.'))
+    column(
+      6,
+      style = "margin-top: 25px",
+      tagList('The R package ', a('childsds', href = 'https://cran.r-project.org/package=childsds'), 'is used to calculate the SDS values.')
+    ),
   ),
 
   uiOutput('data_set_config'),
