@@ -86,7 +86,7 @@ shinyServer(function(input, output) {
 
   output$sheetNameSelection <- renderUI({
     req(sheetNames())
-    selectInput('sheetName', 'Sheet Name', sheetNames())
+    selectInput('sheetName', 'Sheet name', sheetNames())
   })
 
   output$preview <- renderTable({

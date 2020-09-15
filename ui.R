@@ -16,7 +16,7 @@ shinyUI(fluidPage(
   hr(),
 
   fluidRow(
-    column(3, fileInput('excel', 'Choose an XLSX File', accept = '.xlsx')),
+    column(3, fileInput('excel', 'Choose an XLSX file', accept = '.xlsx')),
     column(9, uiOutput('sheetNameSelection'))
   ),
 
