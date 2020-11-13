@@ -1,6 +1,5 @@
 library(shiny)
 library(openxlsx)
-library(childsds)
 
 calculateSdsValues <- function(
   data,
@@ -16,30 +15,29 @@ calculateSdsValues <- function(
   female = 'female'
 ) {
   try({
-    ref <- eval(parse(text = reference))
-  }, silent = TRUE)
-
-  try({
     if (length(data[[column.names$bmi]]) == 0) {
       data[[column.names$bmi]] <- data[[column.names$weight]] / (data[[column.names$height]] / 100) ^ 2
     }
   }, silent = TRUE)
 
-  for (object in c('height', 'weight', 'bmi')) {
+  recodeSex <- list()
+  recodeSex[[male]]   <- 'male'
+  recodeSex[[female]] <- 'female'
+
+  for (measurement in c('height', 'weight', 'bmi')) {
     try({
-      if (length(data[[column.names[[object]]]]) == 0) {
+      if (length(data[[column.names[[measurement]]]]) == 0) {
         next
       }
-      data[[paste(column.names[[object]], 'SDS')]] <- sds(
-        value  = data[[column.names[[object]]]],
-        age    = data[[column.names$age]],
-        sex    = data[[column.names$sex]],
-        male   = male,
-        female = female,
-        item   = object,
-        ref    = ref
+      data[[paste(column.names[[measurement]], 'SDS')]] <- sds(
+        x   = data[[column.names$age]],
+        y   = data[[column.names[[measurement]]]],
+        sex = data[[column.names$sex]],
+        measurement = measurement,
+        refName     = reference,
+        recodeSex   = recodeSex
       )
-      data[[paste(column.names[[object]], 'P')]] <- pnorm(data[[paste(column.names[[object]], 'SDS')]]) * 100
+      data[[paste(column.names[[measurement]], 'P')]] <- pnorm(data[[paste(column.names[[measurement]], 'SDS')]]) * 100
     }, silent = TRUE)
   }
 

@@ -1,4 +1,5 @@
 library(shiny)
+library(GrowthSDS)
 
 shinyUI(fluidPage(
   titlePanel('SDS Calculator for Excel Sheets'),
@@ -26,25 +27,9 @@ shinyUI(fluidPage(
       selectInput(
         'reference',
         'Choose a reference',
-        c(
-          'Kromeyer-Hauschild' = 'kro.ref',
-          'WHO' = 'who.ref',
-          'KiGGS' = 'kiggs.ref',
-          'AGA' = 'aga_15.ref',
-          'Ethiopia' = 'ethiop.ref',
-          'Flanders, Belgium' = 'belgium.ref',
-          'Portugal' = 'portug.ref',
-          'UK WHO' = 'ukwho.ref',
-          'China' = 'zong13.ref',
-          'CDC' = 'cdc.ref'
-        )
+        setNames(standardReferences()$Item, standardReferences()$Title)
       )
-    ),
-    column(
-      6,
-      style = "margin-top: 25px",
-      tagList('The R package ', a('childsds', href = 'https://cran.r-project.org/package=childsds'), 'is used to calculate the SDS values.')
-    ),
+    )
   ),
 
   uiOutput('data_set_config'),
