@@ -5,4 +5,4 @@ Users have the possibility to configure the input and select appropriate referen
 
 ![Screenshot of the input configuration interface](images/input_configuration.png)
 
-A live demo is available at <https://christophb.shinyapps.io/sds-calculator>.
+A live demo is available at <https://crescnet.shinyapps.io/SDS-Calculator-App/>.
