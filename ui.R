@@ -27,7 +27,8 @@ shinyUI(fluidPage(
       selectInput(
         'reference',
         'Choose a reference',
-        setNames(standardReferences()$Item, standardReferences()$Title)
+        setNames(standardReferences()$Item, standardReferences()$Title),
+        'kromeyerHauschild'
       )
     )
   ),
