@@ -10,6 +10,7 @@ calculateSdsValues <- function(
     sex    = 'Sex',
     height = 'Height',
     weight = 'Weight',
+    head_girth = 'Head',
     bmi    = 'BMI'
   ),
   male   = 'male',
@@ -27,7 +28,7 @@ calculateSdsValues <- function(
   recodeSex[[male]]   <- 'male'
   recodeSex[[female]] <- 'female'
 
-  for (measurement in c('height', 'weight', 'bmi')) {
+  for (measurement in c('height', 'weight', 'head_girth', 'bmi')) {
     try({
       if (length(data[[column.names[[measurement]]]]) == 0) {
         next
@@ -84,6 +85,7 @@ shinyServer(function(input, output) {
         sex    = input$sex_col,
         height = input$height_col,
         weight = input$weight_col,
+        head_girth = input$head_girth_col,
         bmi    = input$bmi_col
       )
     )
@@ -111,7 +113,8 @@ shinyServer(function(input, output) {
       fluidRow(
         column(3, varSelectInput('age_col', 'Age column (years)', data())),
         column(3, varSelectInput('height_col', 'Height column (cm)', data())),
-        column(3, varSelectInput('weight_col', 'Weight column (kg)', data()))
+        column(3, varSelectInput('weight_col', 'Weight column (kg)', data())),
+        column(3, varSelectInput('head_girth_col', 'Head Girth column (cm)', data()))
       ),
       fluidRow(
         column(3, textInput('bmi_col', 'BMI column', value = 'BMI')),
@@ -142,6 +145,7 @@ shinyServer(function(input, output) {
           sex    = input$sex_col,
           height = input$height_col,
           weight = input$weight_col,
+          head_girth = input$head_girth_col,
           bmi    = input$bmi_col
         )
       )
