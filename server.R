@@ -13,7 +13,8 @@ calculateSdsValues <- function(
     bmi    = 'BMI'
   ),
   male   = 'male',
-  female = 'female'
+  female = 'female',
+  calc_centiles = FALSE,
 ) {
   try({
     if (length(data[[column.names$bmi]]) == 0) {
@@ -38,7 +39,9 @@ calculateSdsValues <- function(
         refName     = reference,
         recodeSex   = recodeSex
       )
-      data[[paste(column.names[[measurement]], 'P')]] <- pnorm(data[[paste(column.names[[measurement]], 'SDS')]]) * 100
+      if (calc_centiles) {
+        data[[paste(column.names[[measurement]], 'P')]] <- pnorm(data[[paste(column.names[[measurement]], 'SDS', sep = sep)]]) * 100
+      }
     }, silent = TRUE)
   }
 
@@ -73,6 +76,7 @@ shinyServer(function(input, output) {
       input$reference,
       male   = input$male_string,
       female = input$female_string,
+      calc_centiles = input$calc_centiles,
       column.names = list(
         age    = input$age_col,
         sex    = input$sex_col,
@@ -105,9 +109,7 @@ shinyServer(function(input, output) {
       ),
       fluidRow(
         column(3, textInput('bmi_col', 'BMI column', value = 'BMI')),
-        column(3, textInput('male_string', 'Male value', value = 'male')),
-        column(3, textInput('female_string', 'Female value', value = 'female')),
-
+        column(3, style = 'margin-top: 25px', checkboxInput('calc_centiles', 'Calculate centiles')),
         column(3, style = 'margin-top: 25px', downloadButton('generate', 'Generate'))
       ),
       hr(),
@@ -126,6 +128,7 @@ shinyServer(function(input, output) {
         input$reference,
         male   = input$male_string,
         female = input$female_string,
+        calc_centiles = input$calc_centiles,
         column.names = list(
           age    = input$age_col,
           sex    = input$sex_col,
