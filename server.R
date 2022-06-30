@@ -15,6 +15,7 @@ calculateSdsValues <- function(
   male   = 'male',
   female = 'female',
   calc_centiles = FALSE,
+  sep = ' '
 ) {
   try({
     if (length(data[[column.names$bmi]]) == 0) {
@@ -31,7 +32,7 @@ calculateSdsValues <- function(
       if (length(data[[column.names[[measurement]]]]) == 0) {
         next
       }
-      data[[paste(column.names[[measurement]], 'SDS')]] <- sds(
+      data[[paste(column.names[[measurement]], 'SDS', sep = sep)]] <- sds(
         x   = data[[column.names$age]],
         y   = data[[column.names[[measurement]]]],
         sex = data[[column.names$sex]],
@@ -40,7 +41,7 @@ calculateSdsValues <- function(
         recodeSex   = recodeSex
       )
       if (calc_centiles) {
-        data[[paste(column.names[[measurement]], 'P')]] <- pnorm(data[[paste(column.names[[measurement]], 'SDS', sep = sep)]]) * 100
+        data[[paste(column.names[[measurement]], 'P', sep = sep)]] <- pnorm(data[[paste(column.names[[measurement]], 'SDS', sep = sep)]]) * 100
       }
     }, silent = TRUE)
   }
@@ -77,6 +78,7 @@ shinyServer(function(input, output) {
       male   = input$male_string,
       female = input$female_string,
       calc_centiles = input$calc_centiles,
+      sep = input$sep,
       column.names = list(
         age    = input$age_col,
         sex    = input$sex_col,
@@ -103,12 +105,17 @@ shinyServer(function(input, output) {
       hr(),
       fluidRow(
         column(3, varSelectInput('sex_col', 'Sex column', data())),
+        column(3, textInput('male_string', 'Male value', value = 'male')),
+        column(3, textInput('female_string', 'Female value', value = 'female'))
+      ),
+      fluidRow(
         column(3, varSelectInput('age_col', 'Age column (years)', data())),
         column(3, varSelectInput('height_col', 'Height column (cm)', data())),
         column(3, varSelectInput('weight_col', 'Weight column (kg)', data()))
       ),
       fluidRow(
         column(3, textInput('bmi_col', 'BMI column', value = 'BMI')),
+        column(3, textInput('sep', 'Separator', value = ' ')),
         column(3, style = 'margin-top: 25px', checkboxInput('calc_centiles', 'Calculate centiles')),
         column(3, style = 'margin-top: 25px', downloadButton('generate', 'Generate'))
       ),
@@ -129,6 +136,7 @@ shinyServer(function(input, output) {
         male   = input$male_string,
         female = input$female_string,
         calc_centiles = input$calc_centiles,
+        sep = input$sep,
         column.names = list(
           age    = input$age_col,
           sex    = input$sex_col,
